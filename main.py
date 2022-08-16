@@ -21,13 +21,14 @@ class main:
     # playerBoard.obscure()
     # realBoard.reveal(3,2)
     realBoard.printBoard(True)
+    print("\n\n\n")
     realBoard.printBoard(False)
     # playerBoard.printBoard()
 
     game = Game(realBoard)
     while(realBoard.isWin() == False):
         game.interact()
-
+    print("YOU WON! NICEEE")
 
     # print(minesweeperText.grid)
 

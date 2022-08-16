@@ -19,9 +19,9 @@ class Game:
 
     def interact(self):
 
-        #start by showing the player what the board looks like
-        print()
-        self.board.printBoard(False)
+        # #start by showing the player what the board looks like
+        # print()
+        # self.board.printBoard(False)
 
         #ask the player what they want to do
         command = input("What do you want to do? type help for available commands\n").lower()
@@ -58,6 +58,10 @@ class Game:
         elif(command.startswith("reveal")):
             print(f"Revealed {coords[0]},{coords[1]}")
             self.board.reveal(coords[0], coords[1])
+        
+        #end by showing what the player did
+        print()
+        self.board.printBoard(False)
             
         
         

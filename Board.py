@@ -52,7 +52,53 @@ class Board:
     
     def reveal(self, x:int, y:int):
         # isLose = False
-        self.board[y][x][1] = "_"
+        if(self.board[y][x] != "_"):
+            self.board[y][x][1] = "_"
+        else:
+            print(f"Already revealed {x},{y}")
+
+        #if tile is ".", reveal surrounding spaces too
+        if(self.board[y][x][0] == "."):
+            
+            #check if up is in bounds
+            if(y-1 >= 0):
+                #center
+                if(self.board[y-1][x][1] != "_"):
+                    self.reveal(x,y-1)
+
+                #left
+                if(x-1 >= 0 and self.board[y-1][x-1][1] != "_"):
+                    self.reveal(x-1,y-1)
+                
+                #right
+                if(x+1 < self.width and self.board[y-1][x+1][1] != "_"):
+                    self.reveal(x+1,y-1)
+            
+            #check sides
+
+            #left
+            if(x-1 >= 0 and self.board[y][x-1][1] != "_"):
+                self.reveal(x-1,y)
+            
+            #right
+            if(x+1 < self.width and self.board[y][x+1][1] != "_"):
+                self.reveal(x+1,y)
+            
+            #check if down is in bounds
+            if(y+1 < self.height):
+                #center 
+                if(self.board[y+1][x][1] != "_"):
+                    self.reveal(x,y+1)
+
+                #left
+                if(x-1 >= 0 and self.board[y+1][x-1][1] != "_"):
+                    self.reveal(x-1,y+1)
+                
+                #right
+                if(x+1 < self.width and self.board[y+1][x+1][1] != "_"):
+                    self.reveal(x+1,y+1)
+
+
         if(self.board[y][x][0] == "x"):
             # isLoss = True
             print("GAME OVER")
