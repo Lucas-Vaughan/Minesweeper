@@ -43,6 +43,12 @@ class Board:
     #----------Board interaction functions below----------
     
     def addFlag(self, x:int, y:int):
+
+        #dont run if invalid coords
+        if(not self.validCoords(x,y)):
+            print("\nInvalid coordinates! Try again")
+            return
+
         # print(self.board[x][y])
         currentChar = self.board[y][x][1]
         if currentChar == "*":
@@ -53,7 +59,12 @@ class Board:
             print(f"{x},{y} has already been revealed!")
     
     def reveal(self, x:int, y:int):
-        # isLose = False
+
+        #dont run if invalid coords
+        if(not self.validCoords(x,y)):
+            print("\nInvalid coordinates! Try again")
+            return
+
         if(self.board[y][x] != "_"):
             self.board[y][x][1] = "_"
         else:
