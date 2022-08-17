@@ -14,18 +14,20 @@ class Board:
 
     #Functions should accept input as x,y format, but board operations use [y][x] because double list goes down then across
 
+    #Class Variables (shared among all instances):
+    guideCoords = True #Make False
+
     def __init__(self, width, height) -> None:
         #variables here
         self.width = width
         self.height = height
         self.board = [list(list())]
-
+        
         for i in range(height):
             self.board.append(list())
             for j in range(width):
                 self.board[i].append([".", "*"])
 
-        # self.board = [["."]*width]*height
         print("Board initialized!")
     
 
@@ -105,44 +107,41 @@ class Board:
             #trigger game over once created
         # return isLoss
     
-    
-    # def reveal(self, x:int, y:int):
-    #     # print(self.board[x][y])
-
-    #     count = 0
-        
-    #     #check if bomb
-    #     if self.board[x][y] == "x":
-    #         print("GAME OVER")
-    #         #reveal board/end game
-    #         pass
-        
-    #     #if empty then count
-    #     for i in range(y-1,y+2):
-    #         if i >= 0 and i < self.height:
-    #             for j in range(x-1,x+2):
-    #                 if j >= 0 and j < self.width and self.board[j][i] == "x":
-    #                     count += 1
-    #     self.board[x][y] = count
-
     #----------Board setup functions below----------
 
     def printBoard(self, isNum:bool):
-        # print(self.board)
 
+        offset = 0
+        if(self.guideCoords):
+            offset = 2
+
+        output = ""
         try:
-            print(f"Printed Board:")
-            for i in range(len(self.board)):
-                for j in range(len(self.board[i])):
-                    # print(i,j, end="|")
-                    if(isNum or self.board[i][j][1] == "_"):
-                        print(self.board[i][j][0], end=" ")
-                    else:
-                        print(self.board[i][j][1], end=" ")
-                print()
+            output += "Printed Board:\n"
+            for i in range(len(self.board) -1 + offset):
+                #if guideCoord add number and separator
+                if(self.guideCoords and i <= 1):
+                    output += "  "
+                elif(self.guideCoords and i < self.height + offset):
+                    output += f"{i-1}|"
+                
+                for j in range(self.width):
+                    #if guideCoord add numbered row
+                    if(self.guideCoords and i == 0):
+                        output += f" {j+1}"
+                    #if guideCoord add separator row
+                    elif(self.guideCoords and i == 1):
+                        output += " -"    
+                    #print normal stuff
+                    elif(isNum or self.board[i-offset][j][1] == "_"):
+                        output += f" {self.board[i-offset][j][0]}" 
+                    elif(i < self.height+offset):
+                        output += f" {self.board[i-offset][j][1]}"
+                output += "\n"
             
         except:
-            print("Board couldn't print :<")
+            output += "Board couldn't print :<"
+        print(output)
     
     def addMine(self, x:int, y:int):
         # print(self.board[x][y])
