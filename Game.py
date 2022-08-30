@@ -25,15 +25,19 @@ class Game:
 
         #ask the player what they want to do
         command = input("What do you want to do? type help for available commands\n").lower()
+        print()
         
         #check for commands w/out args
         if(command.startswith("help")):
-            print("\nhelp - help ofc :p \nflag x,y - makes a flag on the space \nreveal x,y - reveal a space \nguide - toggles the coordinate guide on the edge \nexit - stop playing the game\n")
+            print("help - help ofc :p \nflag x,y - makes a flag on the space \nreveal x,y - reveal a space \nguide - toggles the coordinate guide on the edge \nexit - stop playing the game")
         elif(command.startswith("exit")):
-            print("EXITED!")
-            return
+            print("Thanks for playing!")
+            exit()
         elif(command.startswith("guide")):
             self.board.guideCoords = not self.board.guideCoords
+        #secret command to print fully revealed board
+        elif(command.startswith("printall")):
+            self.board.printBoard(True)
         
         #rest of commands require an argument, retry input if formatted wrong
         else:
@@ -43,8 +47,7 @@ class Game:
                 #format coords as integers
                 coords[0] = int(coords[0])-1
                 coords[1] = int(coords[1])-1
-                for coord in coords:
-                    print(coord)
+                
                 if len(coords) != 2:
                     return
             except:
@@ -55,11 +58,9 @@ class Game:
         
         #check for which command and use args to fulfill command       
         if(command.startswith("flag")):
-            print(f"Flagged {coords[0]},{coords[1]}")
             self.board.addFlag(coords[0], coords[1])
         
         elif(command.startswith("reveal")):
-            print(f"Revealed {coords[0]},{coords[1]}")
             self.board.reveal(coords[0], coords[1])
         
         #end by showing what the player did

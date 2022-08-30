@@ -28,7 +28,7 @@ class Board:
             for j in range(width):
                 self.board[i].append([".", "*"])
 
-        print("Board initialized!")
+        print("Board initialized!\n")
     
 
     def validCoords(self, x:int, y:int) -> Boolean:
@@ -57,6 +57,9 @@ class Board:
             self.board[y][x][1] = "*"
         else:
             print(f"{x},{y} has already been revealed!")
+            return
+        
+        print(f"Flagged {x+1},{y+1}")
     
     def reveal(self, x:int, y:int):
 
@@ -112,11 +115,14 @@ class Board:
                     self.reveal(x+1,y+1)
 
 
+
         if(self.board[y][x][0] == "x"):
             # isLoss = True
             print("GAME OVER")
+            return
             #trigger game over once created
         # return isLoss
+        print(f"Revealed {x+1},{y+1}")
     
     #----------Board setup functions below----------
 
