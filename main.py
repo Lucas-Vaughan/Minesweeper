@@ -20,7 +20,7 @@ class main:
     # playerBoard = copy.deepcopy(realBoard)
     # playerBoard.obscure()
     # realBoard.reveal(3,2)
-    realBoard.printBoard(True)
+    # realBoard.printBoard(True)
     print("\n\n\n")
     realBoard.printBoard(False)
     # playerBoard.printBoard()

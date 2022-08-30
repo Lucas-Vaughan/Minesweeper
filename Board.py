@@ -122,6 +122,9 @@ class Board:
 
     def printBoard(self, isNum:bool):
 
+        xDigitLength = len(str(self.width))
+        yDigitLength = len(str(self.height))
+
         offset = 0
         if(self.guideCoords):
             offset = 2
@@ -130,24 +133,24 @@ class Board:
         try:
             output += "Printed Board:\n"
             for i in range(len(self.board) -1 + offset):
-                #if guideCoord add number and separator
+                #if guideCoord add number and separator at row start
                 if(self.guideCoords and i <= 1):
-                    output += "  "
+                    output += "".rjust(yDigitLength+1)
                 elif(self.guideCoords and i < self.height + offset):
-                    output += f"{i-1}|"
+                    output += f"{i-1}|".rjust(yDigitLength+1)
                 
                 for j in range(self.width):
                     #if guideCoord add numbered row
                     if(self.guideCoords and i == 0):
-                        output += f" {j+1}"
+                        output += f"{j+1}".rjust(xDigitLength+1)
                     #if guideCoord add separator row
                     elif(self.guideCoords and i == 1):
-                        output += " -"    
+                        output += "---"[:xDigitLength+1].ljust(xDigitLength+1)
                     #print normal stuff
                     elif(isNum or self.board[i-offset][j][1] == "_"):
-                        output += f" {self.board[i-offset][j][0]}" 
+                        output += f" {self.board[i-offset][j][0]}".center(xDigitLength+1)
                     elif(i < self.height+offset):
-                        output += f" {self.board[i-offset][j][1]}"
+                        output += f" {self.board[i-offset][j][1]}".center(xDigitLength+1)
                 output += "\n"
             
         except:
