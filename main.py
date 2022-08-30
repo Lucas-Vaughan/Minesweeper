@@ -7,16 +7,10 @@ import copy
 
 class main:
     
-    realBoard = Board(7,5)
+      
+    game = Game()
     
-    realBoard.addRandomMines(6)
-    realBoard.numberAll()
-
-    realBoard.printBoard(False)
-    
-    game = Game(realBoard)
-    while(realBoard.isWin() == False):
-        game.interact()
-    print("YOU WON! NICEEE")
+    game.interact()
+        
 
 main()

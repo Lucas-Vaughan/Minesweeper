@@ -1,21 +1,27 @@
-import enum
-import imp
-from ntpath import join
 from Board import Board
 
 class Game:
-    
-    def __init__(self, board:Board) -> None:
+
+    def __init__(self) -> None:
         self.winCount = 0
-        self.board = board
+        self.board = self.newBoard()
         # class gameState(enum.Enum):
         #     interaction = 1
         #     win = 2
-        #     loss = 3      
+        #     loss = 3
 
+    def newBoard(width:int=7, height:int=5) -> Board:
+        board = Board(7,5)
+        
+        board.addRandomMines(1)
+        board.numberAll()
 
-    def newGame(self):
-        pass
+        board.printBoard(False)
+        return board      
+    
+    def exit(self):
+        print(f"You won {self.winCount} games!\nThanks for playing!")
+        exit()
 
     def interact(self):
 
@@ -29,15 +35,22 @@ class Game:
         
         #check for commands w/out args
         if(command.startswith("help")):
-            print("help - help ofc :p \nflag x,y - makes a flag on the space \nreveal x,y - reveal a space \nguide - toggles the coordinate guide on the edge \nexit - stop playing the game")
+            print("help - help ofc :p")
+            print("flag x,y - makes a flag on the space")
+            print("reveal x,y - reveal a space")
+            print("guide - toggles the coordinate guide on the edge")
+            print("exit - stop playing the game")
         elif(command.startswith("exit")):
-            print("Thanks for playing!")
-            exit()
+            self.exit()
         elif(command.startswith("guide")):
             self.board.guideCoords = not self.board.guideCoords
         #secret command to print fully revealed board
         elif(command.startswith("printall")):
             self.board.printBoard(True)
+        # elif(command.startswith("revealall")):
+        #     for i in range(self.board.height):
+        #         for j in range(self.board.width):
+        #             self.board.reveal(j,i)
         
         #rest of commands require an argument, retry input if formatted wrong
         else:
@@ -66,6 +79,14 @@ class Game:
         #end by showing what the player did
         print()
         self.board.printBoard(False)
-            
+
+        #call interact again until player exits
+        if(not self.board.isWin()):
+            self.interact()
+        
+        #start again and add a win once win
+        self.winCount += 1
+        self.board = self.newBoard()
+        self.interact()
         
         
