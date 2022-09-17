@@ -10,10 +10,10 @@ class Game:
         #     win = 2
         #     loss = 3
 
-    def newBoard(width:int=7, height:int=5) -> Board:
-        board = Board(7,5)
+    def newBoard(self, width:int=7, height:int=5) -> Board:
+        board = Board(width,height)
         
-        board.addRandomMines(1)
+        board.addRandomMines(6)
         board.numberAll()
 
         board.printBoard(False)
@@ -36,14 +36,25 @@ class Game:
         #check for commands w/out args
         if(command.startswith("help")):
             print("help - help ofc :p")
+            # print("info (wip)- gives you information about the given board")
             print("flag x,y - makes a flag on the space")
             print("reveal x,y - reveal a space")
+            print("newgame - stops the current game and starts a new")
             print("guide - toggles the coordinate guide on the edge")
             print("exit - stop playing the game")
         elif(command.startswith("exit")):
             self.exit()
         elif(command.startswith("guide")):
             self.board.guideCoords = not self.board.guideCoords
+            # show the player the board after appropriate commands
+            self.board.printBoard(False)
+        elif(command.replace(" ","").startswith("newgame")):
+            command = input("Are you sure? (y/n)\n\n").lower()
+            if(command == "y"):
+                self.board = self.newBoard()
+            else:
+                self.board.printBoard(False)
+            
         #secret command to print fully revealed board
         elif(command.startswith("printall")):
             self.board.printBoard(True)
@@ -72,17 +83,21 @@ class Game:
         #check for which command and use args to fulfill command       
         if(command.startswith("flag")):
             self.board.addFlag(coords[0], coords[1])
+            self.board.printBoard(False)
         
         elif(command.startswith("reveal")):
             self.board.reveal(coords[0], coords[1])
+            self.board.printBoard(False)
         
-        #end by showing what the player did
-        print()
-        self.board.printBoard(False)
+        #end by showing what the player did (9/17 changing this bc sometimes it is counterintuitive for some commands)
+        # print()
+        # self.board.printBoard(False)
 
         #call interact again until player exits
         if(not self.board.isWin()):
             self.interact()
+            #I believe this will prevent issues when starting a new game
+            return
         
         #start again and add a win once win
         self.winCount += 1
