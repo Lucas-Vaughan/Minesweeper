@@ -1,3 +1,4 @@
+from pickle import NEWOBJ
 from Board import Board
 
 class Game:
@@ -10,13 +11,11 @@ class Game:
         #     win = 2
         #     loss = 3
 
-    def newBoard(self, width:int=7, height:int=5) -> Board:
-        board = Board(width,height)
+    def newBoard(self, width:int=7, height:int=5, mines:int=6) -> Board:
+        board = Board(width,height,mines)
         
-        board.addRandomMines(6)
-        board.numberAll()
+        board.prepBoard()
 
-        board.printBoard(False)
         return board      
     
     def exit(self):
@@ -48,9 +47,9 @@ class Game:
             self.exit()
         elif(command.startswith("info")):
             print("Board characteristics:")
-            print(f"\n\tWidth: {self.board.width}")
-            print(f"\n\tHeight: {self.board.height}")
-            print(f"\n\tMines: {self.board.height}")
+            print(f"\n    Width: {self.board.width}")
+            print(f"\n    Height: {self.board.height}")
+            print(f"\n    Mines: {self.board.height}")
         elif(command.startswith("guide")):
             self.board.guideCoords = not self.board.guideCoords
             # show the player the board after appropriate commands
@@ -90,7 +89,7 @@ class Game:
                 for i in range(len(coordList)):
                     coords = coordList[i].split(",")
                     coordList[i] = (int(coords[0])-1, int(coords[1])-1)
-                    print(f"coordList[{i}] = {coordList[i]}")
+                    # print(f"coordList[{i}] = {coordList[i]}")
                     # for thing in coordList[i]:
                     #     print(f"For thing in coordList[{i}] = {thing}")
                 
@@ -117,6 +116,22 @@ class Game:
         #end by showing what the player did (9/17 changing this bc sometimes it is counterintuitive for some commands)
         # print()
         # self.board.printBoard(False)
+
+        if(self.board.isLose):
+            playAgain = input("Do you want to play a new board? (y/n)\n").lower()
+            print()
+            while(not playAgain.startswith("y") and not playAgain.startswith("n")):
+                print(f'"{playAgain}" was an invalid response')
+                playAgain = input("Do you want to play a new board? (y/n)\n").lower()
+                print()
+                
+            if(playAgain.startswith("y")):
+                self.board = self.newBoard()
+            elif(playAgain.startswith("n")):
+                self.exit()
+            else:
+                print("Unexpected response")
+                exit()
 
         #call interact again until player exits
         if(not self.board.isWin()):

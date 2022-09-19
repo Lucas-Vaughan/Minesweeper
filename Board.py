@@ -17,11 +17,13 @@ class Board:
     #Class Variables (shared among all instances):
     guideCoords = True #Make False
 
-    def __init__(self, width, height) -> None:
+    def __init__(self, width, height, mines) -> None:
         #variables here
         self.width = width
         self.height = height
         self.board = [list(list())]
+        self.mines = mines
+        self.isLose = False
         
         for i in range(height):
             self.board.append(list())
@@ -117,7 +119,7 @@ class Board:
 
 
         if(self.board[y][x][0] == "x"):
-            # isLoss = True
+            self.isLose = True
             print("GAME OVER")
             return
             #trigger game over once created
@@ -167,6 +169,20 @@ class Board:
         # print(self.board[x][y])
         self.board[y][x][0] = "x"
 
+    def addRandomMine(self):
+        x = random.randrange(0, self.width)
+        y = random.randrange(0, self.height)
+        self.board[y][x][0] = "x"
+
+    def addRandomMines(self, amount:int):
+        for _ in range(amount):
+            Board.addRandomMine(self)
+    
+    def obscure(self):
+        #go thru board, replace all with "*"
+        for y in range(self.height):
+            for x in range(self.width):
+               self.board[y][x][1] = "*"
     def clearNumbers(self):
         #go thru board, replace non x's with "."
         for y in range(self.height):
@@ -196,21 +212,7 @@ class Board:
                                     except:
                                         if(self.board[j][i][0] == "."):
                                             self.board[j][i][0] = "1"
-    
-    def addRandomMine(self):
-        x = random.randrange(0, self.width)
-        y = random.randrange(0, self.height)
-        self.board[y][x][0] = "x"
 
-    def addRandomMines(self, amount:int):
-        for _ in range(amount):
-            Board.addRandomMine(self)
-    
-    def obscure(self):
-        #go thru board, replace all with "*"
-        for y in range(self.height):
-            for x in range(self.width):
-               self.board[y][x][1] = "*"
 
     #MOVE TO interaction.py
     def isWin(self) -> bool:
@@ -220,3 +222,10 @@ class Board:
                 if(self.board[y][x][1] == "*" and self.board[y][x][0] != "x"):
                     win = False
         return win
+    
+    def prepBoard(self):
+        self.isLose = False
+        self.addRandomMines(self.mines)
+        self.numberAll()
+
+        self.printBoard(False)
