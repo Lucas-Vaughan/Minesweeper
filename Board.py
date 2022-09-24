@@ -1,5 +1,6 @@
 
 import random
+from sys import flags
 from xmlrpc.client import Boolean
 
 
@@ -23,6 +24,7 @@ class Board:
         self.height = height
         self.board = [list(list())]
         self.mines = mines
+        self.flags = 0
         self.isLose = False
         
         for i in range(height):
@@ -55,8 +57,10 @@ class Board:
         currentChar = self.board[y][x][1]
         if currentChar == "*":
             self.board[y][x][1] = "F"
+            self.flags += 1
         elif currentChar == "F":
             self.board[y][x][1] = "*"
+            self.flags -= 1
         else:
             print(f"{x},{y} has already been revealed!")
             return
@@ -130,16 +134,19 @@ class Board:
 
     def printBoard(self, isNum:bool):
 
-        xDigitLength = len(str(self.width))
-        yDigitLength = len(str(self.height))
+        xDigitLength = 1
+        yDigitLength = 1
 
         offset = 0
         if(self.guideCoords):
             offset = 2
+            xDigitLength = len(str(self.width))
+            yDigitLength = len(str(self.height))
 
         output = ""
         try:
-            output += "Printed Board:\n"
+            output += f"Flags:{self.flags}/{self.mines}".center(offset+(1+xDigitLength)*self.width)
+            output += "\n"
             for i in range(len(self.board) -1 + offset):
                 #if guideCoord add number and separator at row start
                 if(self.guideCoords and i <= 1):
@@ -170,9 +177,14 @@ class Board:
         self.board[y][x][0] = "x"
 
     def addRandomMine(self):
-        x = random.randrange(0, self.width)
-        y = random.randrange(0, self.height)
-        self.board[y][x][0] = "x"
+        #not the best way to prevent repeat mines but works ok in reasonable circumstances
+        while(True):
+            x = random.randrange(0, self.width)
+            y = random.randrange(0, self.height)
+            if(self.board[y][x][0] != "x"):
+                self.board[y][x][0] = "x"
+                break
+            # print("repeated")
 
     def addRandomMines(self, amount:int):
         for _ in range(amount):
@@ -219,7 +231,7 @@ class Board:
         win = True
         for y in range(self.height):
             for x in range(self.width):
-                if(self.board[y][x][1] == "*" and self.board[y][x][0] != "x"):
+                if(self.board[y][x][1] != "_" and self.board[y][x][0] != "x"):
                     win = False
         return win
     

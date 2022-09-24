@@ -1,3 +1,4 @@
+from ast import While
 from pickle import NEWOBJ
 from Board import Board
 
@@ -12,6 +13,88 @@ class Game:
         #     loss = 3
 
     def newBoard(self, width:int=7, height:int=5, mines:int=6) -> Board:
+        print()
+        print("Beginner (10 mines):")
+        print("    1|8x8 board")
+        print("    2|9x9 board")
+        print("    3|10x10 board")
+        print("Intermediate (40 mines):")
+        print("    4|13x15 board")
+        print("    5|16x16 board")
+        print("Expert (99 mines):")
+        print("    6|30x16 board")
+        print("Custom:")
+        print("    7|Your choice!")
+        print()
+
+        width = 8
+        height = 8
+        mines = 10
+
+        while(True):
+            try:
+                boardChoice = int(input("Select a board:\n"))
+                print()
+            except:
+                boardChoice = -1
+
+            if(boardChoice == 1):
+                width = 8
+                height = 8
+                mines = 10
+                break
+            elif(boardChoice == 2):
+                width = 9
+                height = 9
+                mines = 10
+                break
+            elif(boardChoice == 3):
+                width = 10
+                height = 10
+                mines = 10
+                break
+            elif(boardChoice == 4):
+                width = 13
+                height = 15
+                mines = 40
+                break
+            elif(boardChoice == 5):
+                width = 15
+                height = 16
+                mines = 40
+                break
+            elif(boardChoice == 6):
+                width = 30
+                height = 16
+                mines = 99
+                break
+            elif(boardChoice == 7):
+                while(True):
+                    try:
+                        width = int(input("Width: "))
+                        break
+                    except:
+                        print("\nEnter a number\n")
+                while(True):
+                    try:
+                        height = int(input("Height: "))
+                        break
+                    except:
+                        print("\nEnter a number\n")
+                while(True):
+                    try:
+                        mines = int(input("Mines: "))
+                        break
+                    except:
+                        print("\nEnter a number\n")
+                print()
+                break
+            else:
+                print("Select a given number\n")
+
+
+        # if()
+        
         board = Board(width,height,mines)
         
         board.prepBoard()
@@ -35,22 +118,29 @@ class Game:
         #check for commands w/out args
         if(command.startswith("help")):
             print("help - help ofc :p")
-            print("info (wip)- gives you information about the given board and game")
+            print("info - gives you information about the given board and game")
             print("flag x,y - makes a flag on the space")
             print("reveal x,y - reveal a space")
             print("    Coordinate commands can be chained by adding a new set of coordinates like so:")
             print("    reveal 1,2 5,4 2,3 ...")
             print("newgame - stops the current game and starts a new")
             print("guide - toggles the coordinate guide on the edge")
-            print("exit - stop playing the game\n")
-        elif(command.startswith("exit")):
+            print("exit - stop playing the game")
+            print()
+        elif(command.startswith("exi")): #Command check shortened to 3 letters to remain unique but allow typos
             self.exit()
-        elif(command.startswith("info")):
+        elif(command.startswith("inf")):
             print("Board characteristics:")
-            print(f"\n    Width: {self.board.width}")
-            print(f"\n    Height: {self.board.height}")
-            print(f"\n    Mines: {self.board.height}")
-        elif(command.startswith("guide")):
+            print(f"    Width: {self.board.width}")
+            print(f"    Height: {self.board.height}")
+            print(f"    Mines: {self.board.mines}")
+            print()
+            print("Game characteristics:")
+            print(f"    Wins: {self.winCount}")
+            print(f"    Flags: {self.board.flags}")
+            print()
+
+        elif(command.startswith("gui")):
             self.board.guideCoords = not self.board.guideCoords
             # show the player the board after appropriate commands
             self.board.printBoard(False)
@@ -82,7 +172,7 @@ class Game:
                 # if len(coords) != 2:
                 #     return
 
-                coordList = command.split(" ")
+                coordList = command.rstrip().split(" ")
                 del coordList[0]
                 # for thing in coordList:
                 #     print(f"Coord {thing}")
@@ -101,16 +191,18 @@ class Game:
                 return
         
         #check for which command and use args to fulfill command       
-        if(command.startswith("flag")):
+        if(command.startswith("fla")):
             # print("flag command done")
             for coords in coordList:
                 # print(f"flag coord[0] = {coords[0]} coord[1] = {coords[1]}")
                 self.board.addFlag(coords[0], coords[1])
+            print()
             self.board.printBoard(False)
         
-        elif(command.startswith("reveal")):
+        elif(command.startswith("rev")):
             for coords in coordList:
                 self.board.reveal(coords[0], coords[1])
+                print()
             self.board.printBoard(False)
         
         #end by showing what the player did (9/17 changing this bc sometimes it is counterintuitive for some commands)
