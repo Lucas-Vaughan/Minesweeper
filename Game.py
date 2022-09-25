@@ -59,7 +59,7 @@ class Game:
                 mines = 40
                 break
             elif(boardChoice == 5):
-                width = 15
+                width = 16
                 height = 16
                 mines = 40
                 break
