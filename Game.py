@@ -6,6 +6,7 @@ class Game:
 
     def __init__(self) -> None:
         self.winCount = 0
+        self.initialized = False
         self.board = self.newBoard()
         # class gameState(enum.Enum):
         #     interaction = 1
@@ -33,9 +34,12 @@ class Game:
 
         while(True):
             try:
-                boardChoice = int(input("Select a board:\n"))
+                boardChoice = input("Select a board:\n")
+                if(boardChoice.startswith("exi")):
+                    self.exit()
+                boardChoice = int(boardChoice)
                 print()
-            except:
+            except TypeError:
                 boardChoice = -1
 
             if(boardChoice == 1):
@@ -149,6 +153,7 @@ class Game:
             print()
             if(command == "y"):
                 self.board = self.newBoard()
+                self.initialized = False
             else:
                 self.board.printBoard(False)
             
@@ -201,6 +206,9 @@ class Game:
         
         elif(command.startswith("rev")):
             for coords in coordList:
+                if(not self.initialized):
+                    self.board.startGame(coords[0],coords[1])
+                    self.initialized = True
                 self.board.reveal(coords[0], coords[1])
                 print()
             self.board.printBoard(False)
@@ -232,6 +240,7 @@ class Game:
             return
         
         #start again and add a win once win
+        print("You won!")
         self.winCount += 1
         self.board = self.newBoard()
         self.interact()

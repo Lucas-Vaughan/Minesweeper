@@ -1,4 +1,5 @@
 
+from asyncio import protocols
 import random
 from sys import flags
 from xmlrpc.client import Boolean
@@ -26,6 +27,8 @@ class Board:
         self.mines = mines
         self.flags = 0
         self.isLose = False
+        self.protectedx = (-1,-1)
+        self.protectedy = (-1,-1)
         
         for i in range(height):
             self.board.append(list())
@@ -62,7 +65,7 @@ class Board:
             self.board[y][x][1] = "*"
             self.flags -= 1
         else:
-            print(f"{x},{y} has already been revealed!")
+            print(f"{x+1},{y+1} has already been revealed!")
             return
         
         print(f"Flagged {x+1},{y+1}")
@@ -74,10 +77,14 @@ class Board:
             print("\nInvalid coordinates! Try again")
             return
 
-        if(self.board[y][x] != "_"):
+        if(self.board[y][x][1] == "*"):
             self.board[y][x][1] = "_"
+        elif(self.board[y][x][1] == "F"):
+            print(f"{x+1},{y+1} is flagged")
+            return
         else:
-            print(f"Already revealed {x},{y}")
+            print(f"Already revealed {x+1},{y+1}")
+            return
 
         #if tile is ".", reveal surrounding spaces too
         if(self.board[y][x][0] == "."):
@@ -181,7 +188,9 @@ class Board:
         while(True):
             x = random.randrange(0, self.width)
             y = random.randrange(0, self.height)
-            if(self.board[y][x][0] != "x"):
+            #check that mine is outside of starting area
+            if((self.board[y][x][0] != "x" ) and (x < self.protectedx[0] or x > self.protectedx[1] or y < self.protectedy[0] or y > self.protectedy[1])):
+                print(f"added mine at {x+1},{y+1}")
                 self.board[y][x][0] = "x"
                 break
             # print("repeated")
@@ -225,8 +234,81 @@ class Board:
                                         if(self.board[j][i][0] == "."):
                                             self.board[j][i][0] = "1"
 
+    def startGame(self, x:int, y:int):
+        print(f"Starting game with: {x},{y}")
+        replacedMines = 0
+        self.protectedx = (x,x)
+        self.protectedy = (y,y)
 
-    #MOVE TO interaction.py
+        #check if up is in bounds
+        if(y-1 >= 0):
+            print("Up in bounds")
+            self.protectedy = (y-1,self.protectedy[1])
+            #center
+            if(self.board[y-1][x][0] == "x"):
+                self.board[y-1][x][0] = "."
+                replacedMines += 1
+
+            #left
+            if(x-1 >= 0 and self.board[y-1][x-1][0] == "x"):
+                self.board[y-1][x-1][0] = "."
+                replacedMines += 1
+            
+            #right
+            if(x+1 < self.width and self.board[y-1][x+1][0] == "x"):
+                self.board[y-1][x+1][0] = "."
+                replacedMines += 1
+
+        #check sides
+
+        #left
+        if(x-1 >= 0):
+            print("Left in bounds")
+            self.protectedx = (x-1,self.protectedx[1])
+            if(self.board[y][x-1][0] == "x"):
+                self.board[y][x-1][0] = "."
+                replacedMines += 1
+
+        #center
+        if(self.board[y][x][0] == "x"):
+                self.board[y][x][0] = "."
+                replacedMines += 1
+
+        #right
+        if(x+1 < self.width):
+            print("Right in bounds")
+            self.protectedx = (self.protectedx[0],x+1)
+            if(self.board[y][x+1][0] == "x"):
+                self.board[y][x+1][0] = "."
+                replacedMines += 1
+
+        #check if down is in bounds
+        if(y+1 < self.height):
+            print("Down in bounds")
+            self.protectedy = (self.protectedy[0],y+1)
+            #center 
+            if(self.board[y+1][x][0] == "x"):
+                self.board[y+1][x][0] = "."
+                replacedMines += 1
+
+            #left
+            if(x-1 >= 0 and self.board[y+1][x-1][0] == "x"):
+                self.board[y+1][x-1][0] = "."
+                replacedMines += 1
+
+            #right
+            if(x+1 < self.width and self.board[y+1][x+1][0] == "x"):
+                self.board[y+1][x+1][0] = "."
+                replacedMines += 1
+        
+        print(f"Protectedx: {self.protectedx} Protectedy:{self.protectedy}")
+        print(f"ReplacedMines: {replacedMines}")
+        for _ in range(replacedMines):
+            print("Added mine")
+            self.addRandomMine()
+        self.numberAll()
+
+
     def isWin(self) -> bool:
         win = True
         for y in range(self.height):
