@@ -241,6 +241,7 @@ class Game:
         
         #start again and add a win once win
         print("You won!")
+        self.initialized = False
         self.winCount += 1
         self.board = self.newBoard()
         self.interact()
