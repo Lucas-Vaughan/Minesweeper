@@ -190,7 +190,7 @@ class Board:
             y = random.randrange(0, self.height)
             #check that mine is outside of starting area
             if((self.board[y][x][0] != "x" ) and (x < self.protectedx[0] or x > self.protectedx[1] or y < self.protectedy[0] or y > self.protectedy[1])):
-                print(f"added mine at {x+1},{y+1}")
+                # print(f"added mine at {x+1},{y+1}")
                 self.board[y][x][0] = "x"
                 break
             # print("repeated")

@@ -14,6 +14,7 @@ class Game:
         #     loss = 3
 
     def newBoard(self, width:int=7, height:int=5, mines:int=6) -> Board:
+        self.initialized = False
         print()
         print("Beginner (10 mines):")
         print("    1|8x8 board")
@@ -241,7 +242,6 @@ class Game:
         
         #start again and add a win once win
         print("You won!")
-        self.initialized = False
         self.winCount += 1
         self.board = self.newBoard()
         self.interact()
